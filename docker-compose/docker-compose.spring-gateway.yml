@@ -10,6 +10,8 @@ services:
     ports:
       - 8443:8443
     env_file: .env
+    volumes:
+      - /Users/igavinshang/Documents/igavinshang.docker/logs/gateway-web:/logs
     environment:
       TZ: Asia/Shanghai
 
@@ -23,5 +25,11 @@ services:
     ports:
       - 8445:8445
     env_file: .env
+    volumes:
+      - /Users/igavinshang/Documents/igavinshang.docker/logs/gateway-admin:/logs
     environment:
       TZ: Asia/Shanghai
+
+networks:
+  sc-net:
+    external: false
