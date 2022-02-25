@@ -1,0 +1,47 @@
+version: '3'
+services:
+  zipkin-server:
+    image: openzipkin/zipkin
+    container_name: sc-zipkin-server
+    restart: always
+    volumes:
+      - ../data/zipkin-server/logs:/var/logs
+    networks:
+      - sc-net
+    ports:
+      - 9411:9411
+    environment:
+      - RABBIT_ADDRESSES=rabbitmq:5672
+      - RABBIT_MQ_PORT=5672
+      - RABBIT_PASSWORD=guest
+      - RABBIT_USER=guest
+      - STORAGE_TYPE=elasticsearch
+      - ES_HOSTS=http://elasticsearch:9200
+    depends_on:
+      - rabbitmq
+
+
+  kibana:
+    image: elastic/kibana
+    container_name: sc-kibana
+    restart: always
+    volumes:
+      - ../data/kibana/logs:/var/logs/kibana
+      - ./devops/kibana.yml:/etc/kibana/kibana.yml
+    networks:
+      - sc-net
+    ports:
+      - 5601:5601
+    depends_on:
+      - elasticsearch
+
+  grafana:
+    image: grafana/grafana
+    container_name: sc-grafana
+    restart: always
+    volumes:
+      - ../data/grafana/logs:/var/logs/grafana
+    networks:
+      - sc-net
+    ports:
+      - 3000:3000
